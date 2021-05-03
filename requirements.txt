@@ -1,0 +1,3 @@
+python-kasa==0.4.0.dev2
+RPi.GPIO==0.7.0
+pyky040==0.1.4
