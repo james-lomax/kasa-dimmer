@@ -1,0 +1,14 @@
+[Unit]
+Description=Kasa Dimmer Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u controller.py
+WorkingDirectory=/home/pi/kasa-dimmer
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

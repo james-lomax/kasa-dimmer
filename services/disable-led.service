@@ -1,0 +1,14 @@
+[Unit]
+Description=Disable the ACT led after boot
+After=network.target
+
+[Service]
+ExecStart=/home/pi/kasa-dimmer/services/disable-led.sh
+WorkingDirectory=/home/pi
+StandardOutput=inherit
+StandardError=inherit
+Restart=no
+User=root
+
+[Install]
+WantedBy=multi-user.target
