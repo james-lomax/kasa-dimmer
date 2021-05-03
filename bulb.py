@@ -8,6 +8,11 @@ from kasa import SmartBulb, Discover
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Rather than using the temperature selector which I find has a not-very-useful
+# range, I prefer having a constant orange bulb which I oversaturate to white during
+# the day.
+COLOR_HUE = 20
+
 
 async def find_device(alias: str):
     logger.info("Searching for device...")
@@ -71,9 +76,9 @@ class BulbService(threading.Thread):
             await bulb.update()
             
             if saturation is not None:
-                await bulb.set_hsv(bulb.hsv[0], saturation, bulb.hsv[2])
+                await bulb.set_hsv(COLOR_HUE, saturation, bulb.hsv[2])
             if brightness is not None:
-                await bulb.set_hsv(bulb.hsv[0], bulb.hsv[1], brightness)
+                await bulb.set_hsv(COLOR_HUE, bulb.hsv[1], brightness)
             if toggle:
                 if bulb.is_on:
                     await bulb.turn_off()
