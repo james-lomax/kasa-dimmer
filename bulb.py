@@ -57,7 +57,7 @@ class BulbService(threading.Thread):
     async def _update_loop(self, bulb):
         while True:
             if self.setting_q.empty():
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.1)
                 continue
 
             toggle = False
@@ -87,6 +87,9 @@ class BulbService(threading.Thread):
 
     def toggle_power(self):
         self.setting_q.put({"toggle": True})
+
+    def power_on(self):
+        self.setting_q.put({"power_on": True})
     
     def set_saturation(self, val: int):
         self.setting_q.put({"saturation": val})
