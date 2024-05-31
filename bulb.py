@@ -66,7 +66,7 @@ class BulbService(threading.Thread):
             while not self.setting_q.empty():
                 ud = self.setting_q.get()
                 if "toggle" in ud:
-                    toggle = not toggle
+                    toggle = True
                 if "saturation" in ud:
                     saturation = ud["saturation"]
                 if "brightness" in ud:
@@ -75,15 +75,20 @@ class BulbService(threading.Thread):
             logger.info(f"Setting ({toggle}, {saturation}, {brightness})")
             await bulb.update()
             
+            if toggle:
+                if bulb.is_on:
+                    await bulb.turn_off()
+                    # Wait for the bulb to turn off - discard other events
+                    await asyncio.sleep(0.3)
+                    while not self.setting_q.empty():
+                        self.setting_q.get()
+                    continue
+                else:
+                    await bulb.turn_on()
             if saturation is not None:
                 await bulb.set_hsv(COLOR_HUE, saturation, bulb.hsv[2])
             if brightness is not None:
                 await bulb.set_hsv(COLOR_HUE, bulb.hsv[1], brightness)
-            if toggle:
-                if bulb.is_on:
-                    await bulb.turn_off()
-                else:
-                    await bulb.turn_on()
 
     def toggle_power(self):
         self.setting_q.put({"toggle": True})
